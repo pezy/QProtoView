@@ -1,25 +1,24 @@
-#include <QtGui>
-#include "mainwindow.h"
-#include "TreeModel.h"
-#include "ProtoNode.h"
-#include "/home/oneamtu/nbites/build/man/straight/memory/protos/Sensors.pb.h"
+#include <protocol/real3d.pb.h>
 
-int main(int argc, char *argv[])
-{
-    QApplication app(argc, argv);
-//    MainWindow w;
-//    w.show();
+#include <QApplication>
+#include <QFile>
+#include <QTreeView>
 
-    memory::proto::PMotionSensors* ms =
-            new memory::proto::PMotionSensors();
-    ms->set_timestamp(42);
-    ProtoView::ProtoNode* root = new ProtoView::ProtoNode(NULL, NULL, ms);
-    ProtoView::TreeModel messageModel(root);
+#include "proto_tree_model.h"
 
+int main(int argc, char *argv[]) {
+  QApplication app(argc, argv);
 
-    QTreeView view;
-    view.setModel(&messageModel);
-    view.setWindowTitle(QObject::tr("Proto Viewer"));
-    view.show();
-    return app.exec();
+  Real3DProto::Real3DProto real3d;
+  real3d.mutable_header()->set_frame_id(42);
+  real3d.mutable_header()->set_cam_idx(0);
+  real3d.mutable_header()->set_time_stamp(42);
+
+  google::protobuf::TreeModel model(real3d);
+
+  QTreeView view;
+  view.setModel(&model);
+  view.setWindowTitle(QObject::tr("Proto Viewer"));
+  view.show();
+  return app.exec();
 }

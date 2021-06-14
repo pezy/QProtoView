@@ -1,51 +1,45 @@
+cmake_minimum_required(VERSION 3.1.0)
+# ########### ProtoViewer
 
-############ ProtoViewer
-
-project( ProtoViewer )
-cmake_minimum_required(VERSION 2.6.0)
-
-########### Dependencies
-
-find_package(Qt4 REQUIRED)
-
-include(${QT_USE_FILE})
-add_definitions(${QT_DEFINITIONS})
-
-########### Sources
-
-set( ProtoViewer_srcs main.cpp
-  mainwindow.cpp
-  TreeModel.cpp
-  Node.cpp
-  ProtoNode.cpp )
-
-set(ProtoViewer_headers mainwindow.h
-  TreeModel.h )
-
-set(ProtoViewer_forms mainwindow.ui)
-
-#SET(ProtoViewer_resources images.qrc)
-
-include_directories(${CMAKE_CURRENT_BINARY_DIR}
-  /usr/include/qt4)
-
-############ Qt4 goodness
-
-Qt4_wrap_cpp(ProtoViewer_headers_moc ${ProtoViewer_headers})
-Qt4_wrap_ui(ProtoViewer_forms_headers ${ProtoViewer_forms})
-#QT4_ADD_RESOURCES(ProtoViewer_RESOURCES_RCC ${Protoviewer_RESOURCES})
-
-add_executable(ProtoViewer ${ProtoViewer_srcs}
-  ${ProtoViewer_headers_moc}
-  ${ProtoViewer_forms_headers} )
-#    ${helloworld_RESOURCES_RCC})
-
-link_directories( /home/oneamtu/nbites/build/man/straight/memory/protos )
-find_library(PROTOS protos /home/oneamtu/nbites/build/man/straight/memory/protos)
-
-target_link_libraries(
+project(
   ProtoViewer
-  protobuf
-  ${PROTOS}
-  ${QT_LIBRARIES}
-  )
+  VERSION 1.0.0
+  LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_PREFIX_PATH /Users/pezy/Qt5.12.8/5.12.8/clang_64)
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOUIC ON)
+
+if(CMAKE_VERSION VERSION_LESS "3.7.0")
+  set(CMAKE_INCLUDE_CURRENT_DIR ON)
+endif()
+
+find_package(
+  Qt5
+  COMPONENTS Core Widgets Gui
+  REQUIRED)
+
+include_directories(
+  /Users/pezy/.gradle/caches/modules-2/files-2.1/com.hobot.native.hobot-adas.stable.3rd-party/protobuf/2.6.1_mac/files/protobuf/include
+  /Users/pezy/.gradle/caches/modules-2/files-2.1/com.hobot.native.hobot.auto/hobot-auto-protocol/0.0.11_mac/files/hobot-auto-protocol/include
+)
+
+link_directories(
+  /Users/pezy/.gradle/caches/modules-2/files-2.1/com.hobot.native.hobot-adas.stable.3rd-party/protobuf/2.6.1_mac/files/protobuf/lib
+  /Users/pezy/.gradle/caches/modules-2/files-2.1/com.hobot.native.hobot.auto/hobot-auto-protocol/0.0.11_mac/files/hobot-auto-protocol/lib
+)
+
+add_executable(
+  ProtoViewer
+  main.cpp
+  proto_tree_item.h
+  proto_tree_item.cpp
+  proto_tree_model.h
+  proto_tree_model.cpp)
+
+target_link_libraries(ProtoViewer hobot-auto-protocol protobuf Qt5::Core
+                      Qt5::Widgets Qt5::Gui)
